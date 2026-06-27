@@ -10,38 +10,44 @@ class PATIENT {
     String address;
     String medicalHistory;
     int patientID;
-    int appointmentID;
-    String appointmentDate;
-    String appointmentTime;
-    String appointmentStatus;
-    int billID;
 }
 class DOCTOR {
     String name;
     String specialization;
-    double consultationFee;
     String availability;
     int doctorID;
+    double doctorFee;
+}
+class BILL {
+    int billID;
+    APPOINTMENT appointment;
+    double consultationFee;
     double medicineFee;
     double laboratoryFee;
     double totalAmount;
     String status;
 }
-class BILL {
-    
+class APPOINTMENT {
+    int appointmentID;
+    DOCTOR doctor;
+    PATIENT patient;
+    BILL bl;
+    String appointmentDate;
+    String appointmentTime;
+    String appointmentStatus;
 }
 public class HOSPITALMANAGEMENT {
     static Scanner scanner = new Scanner(System.in);
     static ArrayList<PATIENT> patient = new ArrayList<>();
     static ArrayList<DOCTOR> doctor = new ArrayList<>();
+    static ArrayList<APPOINTMENT> appointment = new ArrayList<>();
+    static ArrayList<BILL> bill = new ArrayList<>();
     static int patientIDnumbers = 1001;
     static int doctorIDnumbers = 101;
     static int appointmentIDnumbers = 501;
     static int billingIDnumbers = 3001;
     static String adminName = "admin";
     static String adminPassword = "admin123";
-    static DOCTOR doctorSequence;
-    static PATIENT patientSequence;
     public static void main(String[] args) {
         while(true) {
             System.out.println("=====HOSPITAL-MANAGEMENT-SYSTEM=====");
@@ -54,7 +60,7 @@ public class HOSPITALMANAGEMENT {
 
             System.out.println("Enter an option: ");
             int option;
-
+            
             try {
                 option = Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
@@ -280,9 +286,9 @@ public class HOSPITALMANAGEMENT {
     }
     static void BOOKAPPOINTMENT() {
         while(true) {
-            boolean findPatient = false;
+            PATIENT patientfound = null;
             System.out.println("=====BOOK-APPOINTMENT=====");
-            System.out.println("Enter Patient ID: ");
+            System.out.println("Enter Appointment ID: ");
             int appointmentID;
 
             try {
@@ -298,24 +304,24 @@ public class HOSPITALMANAGEMENT {
             }
 
             for(PATIENT ptt : patient) {
-                if(appointmentID == ptt.patientID) {
-                    patientSequence = ptt;
-                    findPatient = true;
+                if(ptt.patientID == appointmentID) {
+                    patientfound = ptt;
                     System.out.println("Patient ID found.");
+                    break;
                 }
             }
 
-            if(!findPatient) {
+            if(patientfound == null) {
                 System.out.println("Patient ID not found.");
                 return;
             }
 
             for(int i = 0; i < doctor.size(); i++) {
-                doctorSequence = doctor.get(i);
+                DOCTOR dtr = doctor.get(i);
                 System.out.println((i + 1) + ".) " 
-                + " Dr. " + doctorSequence.name + " | " 
-                + doctorSequence.specialization + " | " 
-                + doctorSequence.availability);
+                + " Dr. " + dtr.name + " | " 
+                + dtr.specialization + " | " 
+                + dtr.availability);
             }
 
             System.out.println("Choose doctor: ");
@@ -333,7 +339,7 @@ public class HOSPITALMANAGEMENT {
                 continue;
             }
 
-            doctorSequence = doctor.get(choose - 1);
+            DOCTOR doctorfound = doctor.get(choose - 1);
 
             System.out.println("Date for appointment: Ex. (XX/XX/XXXX)");
             String appoDate = scanner.nextLine();
@@ -353,9 +359,9 @@ public class HOSPITALMANAGEMENT {
 
                 System.out.println("=====APPOINTMENT-SUMMARY=====");
                 System.out.println("Appointment ID: " + appointmentIDnumbers);
-                System.out.println("Patient: " + patientSequence.name);
-                System.out.println("Doctor: " + doctorSequence.name);
-                System.out.println("Specialization: " + doctorSequence.specialization);
+                System.out.println("Patient: " + patientfound.name);
+                System.out.println("Doctor: " + doctorfound.name);
+                System.out.println("Specialization: " + doctorfound.specialization);
                 System.out.println("Date: " + appoDate);
                 System.out.println("Time: " + appoTime);
                 System.out.println("Status: Scheduled");
@@ -379,13 +385,17 @@ public class HOSPITALMANAGEMENT {
 
                 switch(confirmation) {
                     case 1 : {
-                        patientSequence.appointmentStatus = "Scheduled";
-                        patientSequence.appointmentDate = appoDate;
-                        patientSequence.appointmentTime = appoTime;
-                        patientSequence.appointmentID = appointmentIDnumbers++;
-                        doctorSequence.status = "Unpaid";
-                        doctorSequence.availability = "Unavailable";
+                        APPOINTMENT app = new APPOINTMENT();
+                        app.patient = patientfound;
+                        app.appointmentStatus = "Scheduled";
+                        app.doctor = doctorfound;
+                        app.patient = patientfound;
+                        app.appointmentDate = appoDate;
+                        app.appointmentTime = appoTime;
+                        app.appointmentID = appointmentIDnumbers++;
+                        appointment.add(app);
 
+                        doctorfound.availability = "Unavailable";
                         System.out.println("Appointment scheduled successfully.");
                         return;
                     }
@@ -398,7 +408,7 @@ public class HOSPITALMANAGEMENT {
     }
     static void CANCELAPPOINTMENT() {
         while(true) {
-            boolean findAppointment = false;
+            APPOINTMENT found = null;
             System.out.println("=====CANCEL-APPOINTMENT=====");
             System.out.println("Enter Appointment ID: ");
             int appoID;
@@ -415,17 +425,17 @@ public class HOSPITALMANAGEMENT {
                 continue;
             }
 
-            for(PATIENT ptt: patient) {
-                if(appoID == ptt.appointmentID) {
-                    findAppointment = true;
+            for(APPOINTMENT app : appointment) {
+                if(app.appointmentID == appoID) {
+                    found = app;
                     System.out.println("Appointment Found.");
-                    System.out.println("Patient: " + ptt.name);
-                    System.out.println("Doctor: Dr. " + doctorSequence.name);
-                    System.out.println("Status: " + ptt.appointmentStatus);
+                    System.out.println("Patient: " + found.patient.name);
+                    System.out.println("Doctor: Dr. " + found.doctor.name);
+                    System.out.println("Status: " + found.appointmentStatus);
                 }
             }
 
-            if(!findAppointment) {
+            if(found == null) {
                 System.out.println("Appointment not found.");
                 continue;
             }
@@ -451,15 +461,11 @@ public class HOSPITALMANAGEMENT {
 
             switch(option) {
                 case 1 : {
-                    patientSequence.appointmentStatus = "Cancelled";
-                    for(DOCTOR dtr : doctor) {
-                        if(doctorSequence.name.equals(dtr.name)) {
-                            dtr.availability = "Available";
-                            break;
-                        }
-                    }
+                    found.appointmentStatus = "Cancelled";
+                    found.doctor.availability = "Available";
+
                     System.out.println("Appointment cancelled successfully.");
-                    System.out.println("Dr. " + doctorSequence.name + " is now available.");
+                    System.out.println("Dr. " + found.doctor.name + " is now available.");
                     return;
                 }
                 case 2 : {
@@ -502,7 +508,7 @@ public class HOSPITALMANAGEMENT {
     static void GENERATEBILL() {
         while(true) {
             double total = 0.0;
-            boolean findID = false;
+            APPOINTMENT found = null;
             System.out.println("=====GENERATE-BILL=====");
             System.out.println("Enter Appointment ID: ");
             int generateAppo;
@@ -518,14 +524,15 @@ public class HOSPITALMANAGEMENT {
                 System.out.println("3 Digits only.");
             }
 
-            for(PATIENT ptt: patient) {
-                if(generateAppo  == ptt.appointmentID) {
-                    findID = true;
-                    System.out.println("Appointment ID found.");
+            for(APPOINTMENT app : appointment) {
+                if(app.appointmentID == generateAppo) {
+                found = app;
+                System.out.println("Appointment ID found.");
+                break;
                 }
             }
 
-            if(!findID) {
+            if(found == null) {
                 System.out.println("Appointment ID not found.");
                 continue;
             }
@@ -561,13 +568,13 @@ public class HOSPITALMANAGEMENT {
             }
 
             System.out.println("=====BILL-SUMMARY=====");
-            System.out.println("Consultation Fee: " + doctorSequence.consultationFee);
+            System.out.println("Consultation Fee: " + found.doctor.doctorFee);
             System.out.println("Medicine Fee:" + medFee);
             System.out.println("Laboratory Fee: " + labFee);
             System.out.println("=========================");
-            total = doctorSequence.consultationFee + medFee + labFee;
+            total = found.doctor.doctorFee + medFee + labFee;
             System.out.println("TOTAL: " + total);
-            System.out.println("Payment Status: " + doctorSequence.status);
+            System.out.println("Payment Status: Unpaid");
 
             System.out.println("\nConfirm Bill? ");
             System.out.println("[1] Yes");
@@ -588,13 +595,19 @@ public class HOSPITALMANAGEMENT {
 
             switch(option) {
                 case 1 : {
-                    doctorSequence.medicineFee = medFee;
-                    doctorSequence.laboratoryFee = labFee;
-                    doctorSequence.totalAmount = total;
-                    doctorSequence.status = "Pending Payment";
-                    patientSequence.billID = billingIDnumbers++;
+                    BILL bl = new BILL();
+                    bl.billID = billingIDnumbers++;
+                    bl.medicineFee = medFee;
+                    bl.appointment = found;
+                    bl.laboratoryFee = labFee;
+                    bl.totalAmount = total;
+                    bl.consultationFee = found.doctor.doctorFee;
+                    bl.status = "Pending Payment";
+
+                    bill.add(bl);
+
                     System.out.println("Bill generated successfully.");
-                    System.out.println("Bill ID: " + "HPM" + patientSequence.billID);
+                    System.out.println("Bill ID: " + "HPM" + bl.billID);
                     return;
                 }
                 case 2 : {
@@ -605,7 +618,7 @@ public class HOSPITALMANAGEMENT {
     }
     static void PAYBILL() {
         while(true) {
-            boolean billFind = false;
+            BILL billFound = null;
             double change = 0.0;
             System.out.println("=====PAY-BILL=====");
             System.out.println("Enter Bill ID: ");
@@ -623,20 +636,20 @@ public class HOSPITALMANAGEMENT {
                 continue;
             }
 
-            for(PATIENT ptt : patient) {
-                if(billingID == ptt.billID) {
-                    billFind = true;
-                    System.out.println("Bill Found.");
-                    System.out.println("Total Amount: " + doctorSequence.totalAmount);
-                    System.out.println("===BREAKDOWN-OF-PAYMENT===");
-                    System.out.println("Medicine Fee: " + doctorSequence.medicineFee);
-                    System.out.println("Laboratory Fee: " + doctorSequence.laboratoryFee);
-                    System.out.println("=========================");
-                    System.out.println("Payment Status: " + doctorSequence.status);
+            for(BILL bl: bill) {
+                if(bl.billID == billingID) {
+                billFound = bl;
+                System.out.println("Bill Found.");
+                System.out.println("Total Amount: " + billFound.totalAmount);
+                System.out.println("===BREAKDOWN-OF-PAYMENT===");
+                System.out.println("Medicine Fee: " + billFound.medicineFee);
+                System.out.println("Laboratory Fee: " + billFound.laboratoryFee);
+                System.out.println("=========================");
+                System.out.println("Payment Status: " + billFound.status);
                 }
             }
 
-            if(!billFind) {
+            if(billFound == null) {
                 System.out.println("Bill not Found.");
                 continue;
             }
@@ -655,13 +668,13 @@ public class HOSPITALMANAGEMENT {
                 continue;
             }
 
-            if(payment < doctorSequence.totalAmount) {
+            if(payment < billFound.totalAmount) {
                 System.out.println("Insufficient payment.");
                 continue;
             }
 
-            change = payment - doctorSequence.totalAmount;
-            doctorSequence.status = "Paid";
+            change = payment - billFound.totalAmount;
+            billFound.status = "Paid";
             System.out.println("Payment successful.");
             System.out.println("Change: " + change);
             return;
@@ -766,16 +779,16 @@ public class HOSPITALMANAGEMENT {
             }
 
             System.out.println("Consultation Fee: ");
-            double doctorconsultationFee;
+            double doctoconsultationFee;
 
             try {
-                doctorconsultationFee = Double.parseDouble(scanner.nextLine());
+                doctoconsultationFee = Double.parseDouble(scanner.nextLine());
             } catch (NumberFormatException e) {
                 System.out.println("Numbers only.");
                 continue;
             }
 
-            if(doctorconsultationFee <= 0.0) {
+            if(doctoconsultationFee <= 0.0) {
                 System.out.println("Cannot set 0 or negative numbers for consultation fee field.");
                 continue;
             }
@@ -802,7 +815,7 @@ public class HOSPITALMANAGEMENT {
             DOCTOR doctorAdd = new DOCTOR();
             doctorAdd.name = doctorName;
             doctorAdd.specialization = doctorSpecialization;
-            doctorAdd.consultationFee = doctorconsultationFee;
+            doctorAdd.doctorFee = doctoconsultationFee;
             doctorAdd.availability = doctorAvailability;
             doctorAdd.doctorID = doctorIDnumbers++;
             doctor.add(doctorAdd);
@@ -821,13 +834,13 @@ public class HOSPITALMANAGEMENT {
             }
 
             for(int i = 0; i < doctor.size(); i++) {
-                doctorSequence = doctor.get(i);
+                DOCTOR dtr = doctor.get(i);
                 System.out.println((i + 1) + ".) " 
-                + "Dr. " + doctorSequence.name 
+                + "Dr. " + dtr.name 
                 + " | Specialization: " 
-                + doctorSequence.specialization
+                + dtr.specialization
                 + " | Availability: " 
-                + doctorSequence.availability);
+                + dtr.availability);
             }
 
             System.out.println("Select a doctor to remove: ");
@@ -853,6 +866,7 @@ public class HOSPITALMANAGEMENT {
     static void UPDATE() {
         while(true) {
             boolean doctorFind = false;
+            DOCTOR findDoctor = null;
             System.out.println("=====UPDATE-AVAILABILITY=====");
 
             if(doctor.isEmpty()) {
@@ -876,7 +890,7 @@ public class HOSPITALMANAGEMENT {
             }
             for(DOCTOR dtr : doctor) {
                 if(doctorIDinput == dtr.doctorID) {
-                    doctorSequence = dtr;
+                    findDoctor = dtr;
                     doctorFind = true;
                     System.out.println("Doctor found.");
                     System.out.println("Doctor Name: " + dtr.name);
@@ -909,13 +923,13 @@ public class HOSPITALMANAGEMENT {
             }
 
             if(status == 1) {
-                doctorSequence.availability = "Available";
+                findDoctor.availability = "Available";
             }
             else if(status == 2) {
-                doctorSequence.availability = "Unavailable";
+                findDoctor.availability = "Unavailable";
             }
             else if(status == 3) {
-                doctorSequence.availability = "On-Leave";
+                findDoctor.availability = "On-Leave";
             }
             
             System.out.println("Availability updated.");
