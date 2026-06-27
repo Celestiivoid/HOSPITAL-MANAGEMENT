@@ -14,6 +14,7 @@ class PATIENT {
     String appointmentDate;
     String appointmentTime;
     String appointmentStatus;
+    int billID;
 }
 class DOCTOR {
     String name;
@@ -21,6 +22,13 @@ class DOCTOR {
     double consultationFee;
     String availability;
     int doctorID;
+    double medicineFee;
+    double laboratoryFee;
+    double totalAmount;
+    String status;
+}
+class BILL {
+    
 }
 public class HOSPITALMANAGEMENT {
     static Scanner scanner = new Scanner(System.in);
@@ -28,6 +36,8 @@ public class HOSPITALMANAGEMENT {
     static ArrayList<DOCTOR> doctor = new ArrayList<>();
     static int patientIDnumbers = 1001;
     static int doctorIDnumbers = 101;
+    static int appointmentIDnumbers = 501;
+    static int billingIDnumbers = 3001;
     static String adminName = "admin";
     static String adminPassword = "admin123";
     static DOCTOR doctorSequence;
@@ -59,8 +69,8 @@ public class HOSPITALMANAGEMENT {
 
             switch(option) {
                 case 1 -> REGISTRATIONMENU();
-                case 2 -> APPOINTMENT();
-                case 3 -> BILLING();
+                case 2 -> APPOINTMENTMENU();
+                case 3 -> BILLINGMENU();
                 case 4 -> RECORDS();
                 case 5 -> ADMINLOGIN();
                 case 6 -> {
@@ -237,7 +247,38 @@ public class HOSPITALMANAGEMENT {
             }
         }
     }
-    static void APPOINTMENT() {
+    static void APPOINTMENTMENU() {
+        while(true) {
+            System.out.println("=====APPOINTMENT-MENU=====");
+            System.out.println("[1] Book Appointment");
+            System.out.println("[2] Cancel Appointment");
+            System.out.println("[3] Back");
+
+            System.out.println("Enter option: ");
+            int option;
+
+            try {
+                option = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Numbers only.");
+                continue;
+            }
+
+            if(option < 1 || option >= 4) {
+                System.out.println("Out of range.");
+                continue;
+            } 
+
+            switch(option) {
+                case 1 -> BOOKAPPOINTMENT();
+                case 2 -> CANCELAPPOINTMENT();
+                case 3 -> {
+                    return;
+                }
+            }
+        }
+    }
+    static void BOOKAPPOINTMENT() {
         while(true) {
             boolean findPatient = false;
             System.out.println("=====BOOK-APPOINTMENT=====");
@@ -292,6 +333,8 @@ public class HOSPITALMANAGEMENT {
                 continue;
             }
 
+            doctorSequence = doctor.get(choose - 1);
+
             System.out.println("Date for appointment: Ex. (XX/XX/XXXX)");
             String appoDate = scanner.nextLine();
 
@@ -309,7 +352,7 @@ public class HOSPITALMANAGEMENT {
             }
 
                 System.out.println("=====APPOINTMENT-SUMMARY=====");
-                System.out.println("Appointment ID: " + appointmentID);
+                System.out.println("Appointment ID: " + appointmentIDnumbers);
                 System.out.println("Patient: " + patientSequence.name);
                 System.out.println("Doctor: " + doctorSequence.name);
                 System.out.println("Specialization: " + doctorSequence.specialization);
@@ -339,6 +382,10 @@ public class HOSPITALMANAGEMENT {
                         patientSequence.appointmentStatus = "Scheduled";
                         patientSequence.appointmentDate = appoDate;
                         patientSequence.appointmentTime = appoTime;
+                        patientSequence.appointmentID = appointmentIDnumbers++;
+                        doctorSequence.status = "Unpaid";
+                        doctorSequence.availability = "Unavailable";
+
                         System.out.println("Appointment scheduled successfully.");
                         return;
                     }
@@ -349,10 +396,290 @@ public class HOSPITALMANAGEMENT {
                 }
         }
     }
-    static void BILLING() {
+    static void CANCELAPPOINTMENT() {
+        while(true) {
+            boolean findAppointment = false;
+            System.out.println("=====CANCEL-APPOINTMENT=====");
+            System.out.println("Enter Appointment ID: ");
+            int appoID;
 
+            try  {
+                appoID = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Numbers only.");
+                continue;
+            }
+
+            if(appoID < 100 || appoID > 999) {
+                System.out.println("3 Digits only.");
+                continue;
+            }
+
+            for(PATIENT ptt: patient) {
+                if(appoID == ptt.appointmentID) {
+                    findAppointment = true;
+                    System.out.println("Appointment Found.");
+                    System.out.println("Patient: " + ptt.name);
+                    System.out.println("Doctor: Dr. " + doctorSequence.name);
+                    System.out.println("Status: " + ptt.appointmentStatus);
+                }
+            }
+
+            if(!findAppointment) {
+                System.out.println("Appointment not found.");
+                continue;
+            }
+
+            System.out.println("Cancel appointment? ");
+            System.out.println("[1] Yes");
+            System.out.println("[2] No");
+
+            System.out.println("Enter option: ");
+            int option;
+
+            try {
+                option = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Numbers only.");
+                continue;
+            }
+
+            if(option < 1 || option >= 3) {
+                System.out.println("Out of range.");
+                continue;
+            }
+
+            switch(option) {
+                case 1 : {
+                    patientSequence.appointmentStatus = "Cancelled";
+                    for(DOCTOR dtr : doctor) {
+                        if(doctorSequence.name.equals(dtr.name)) {
+                            dtr.availability = "Available";
+                            break;
+                        }
+                    }
+                    System.out.println("Appointment cancelled successfully.");
+                    System.out.println("Dr. " + doctorSequence.name + " is now available.");
+                    return;
+                }
+                case 2 : {
+                    return;
+                }
+            }
+        }
+    }
+    static void BILLINGMENU() {
+        while(true) {
+            System.out.println("=====BILLING-MENU=====");
+            System.out.println("[1] Generate Bill");
+            System.out.println("[2] Pay Bill");
+            System.out.println("[3] Back");
+
+            System.out.println("Enter option: ");
+            int option;
+
+            try {
+                option = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Numbers only.");
+                continue;
+            }
+
+            if(option < 1 || option >= 4) {
+                System.out.println("Out of range.");
+                continue;
+            }
+
+            switch(option) {
+                case 1 -> GENERATEBILL();
+                case 2 -> PAYBILL();
+                case 3 -> {
+                    return;
+                }
+            }
+        }
+    }
+    static void GENERATEBILL() {
+        while(true) {
+            double total = 0.0;
+            boolean findID = false;
+            System.out.println("=====GENERATE-BILL=====");
+            System.out.println("Enter Appointment ID: ");
+            int generateAppo;
+
+            try {
+                generateAppo = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Numbers only.");
+                continue;
+            }
+
+            if(generateAppo < 100 || generateAppo > 999) {
+                System.out.println("3 Digits only.");
+            }
+
+            for(PATIENT ptt: patient) {
+                if(generateAppo  == ptt.appointmentID) {
+                    findID = true;
+                    System.out.println("Appointment ID found.");
+                }
+            }
+
+            if(!findID) {
+                System.out.println("Appointment ID not found.");
+                continue;
+            }
+
+            System.out.println("Medicine Fee: ");
+            double medFee;
+
+            try {
+                medFee = Double.parseDouble(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Numbers only.");
+                continue;
+            }
+
+            if(medFee <= 0.0) {
+                System.out.println("Cannot validate 0 or negative numbers for medicine fee field.");
+                continue;
+            }
+
+            System.out.println("Laboratory Fee:");
+            double labFee;
+
+            try {
+                labFee = Double.parseDouble(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Numbers only.");
+                continue;
+            }
+
+            if(labFee <= 0.0) {
+                System.out.println("Cannot validate 0 or negative numbers for laboratory fee field.");
+                continue;
+            }
+
+            System.out.println("=====BILL-SUMMARY=====");
+            System.out.println("Consultation Fee: " + doctorSequence.consultationFee);
+            System.out.println("Medicine Fee:" + medFee);
+            System.out.println("Laboratory Fee: " + labFee);
+            System.out.println("=========================");
+            total = doctorSequence.consultationFee + medFee + labFee;
+            System.out.println("TOTAL: " + total);
+            System.out.println("Payment Status: " + doctorSequence.status);
+
+            System.out.println("\nConfirm Bill? ");
+            System.out.println("[1] Yes");
+            System.out.println("[2] No");
+            int option;
+
+            try {
+                option = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Numbers only.");
+                continue;
+            }
+
+            if(option < 1 || option >= 3) {
+                System.out.println("Out of range.");
+                continue;
+            }
+
+            switch(option) {
+                case 1 : {
+                    doctorSequence.medicineFee = medFee;
+                    doctorSequence.laboratoryFee = labFee;
+                    doctorSequence.totalAmount = total;
+                    doctorSequence.status = "Pending Payment";
+                    patientSequence.billID = billingIDnumbers++;
+                    System.out.println("Bill generated successfully.");
+                    System.out.println("Bill ID: " + "HPM" + patientSequence.billID);
+                    return;
+                }
+                case 2 : {
+                    return;
+                }
+            }
+        }
+    }
+    static void PAYBILL() {
+        while(true) {
+            boolean billFind = false;
+            double change = 0.0;
+            System.out.println("=====PAY-BILL=====");
+            System.out.println("Enter Bill ID: ");
+            int billingID;
+
+            try {
+                billingID = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Numbers only.");
+                continue;
+            }
+
+            if(billingID < 3000 || billingID > 9999) {
+                System.out.println("Invalid billing ID.");
+                continue;
+            }
+
+            for(PATIENT ptt : patient) {
+                if(billingID == ptt.billID) {
+                    billFind = true;
+                    System.out.println("Bill Found.");
+                    System.out.println("Total Amount: " + doctorSequence.totalAmount);
+                    System.out.println("===BREAKDOWN-OF-PAYMENT===");
+                    System.out.println("Medicine Fee: " + doctorSequence.medicineFee);
+                    System.out.println("Laboratory Fee: " + doctorSequence.laboratoryFee);
+                    System.out.println("=========================");
+                    System.out.println("Payment Status: " + doctorSequence.status);
+                }
+            }
+
+            if(!billFind) {
+                System.out.println("Bill not Found.");
+                continue;
+            }
+            System.out.println("\nEnter Payment: ");
+            double payment;
+
+            try {
+                payment = Double.parseDouble(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Numbers only.");
+                continue;
+            }
+
+            if(payment <= 0.0) {
+                System.out.println("Cannot validate 0 or negative numbers for payment field.");
+                continue;
+            }
+
+            if(payment < doctorSequence.totalAmount) {
+                System.out.println("Insufficient payment.");
+                continue;
+            }
+
+            change = payment - doctorSequence.totalAmount;
+            doctorSequence.status = "Paid";
+            System.out.println("Payment successful.");
+            System.out.println("Change: " + change);
+            return;
+        }
     }
     static void RECORDS() {
+
+    }
+    static void VIEWPATIENT() {
+
+    }
+    static void VIEWDOCTORS() {
+
+    }
+    static void VIEWAPPOINTMENTS() {
+
+    }
+    static void VIEWBILLS() {
 
     }
     static boolean ADMINLOGIN() {
