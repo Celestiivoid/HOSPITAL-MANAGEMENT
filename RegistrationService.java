@@ -70,7 +70,8 @@ public class RegistrationService {
                 continue;
             }
 
-            if(!genderRegistration.equalsIgnoreCase("Male") && !genderRegistration.equalsIgnoreCase("Female")) {
+            if(!genderRegistration.equalsIgnoreCase("Male") 
+                && !genderRegistration.equalsIgnoreCase("Female")) {
                 System.out.println("Invalid gender.");
                 continue;
             }

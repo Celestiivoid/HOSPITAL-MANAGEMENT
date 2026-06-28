@@ -246,5 +246,11 @@ public class AdminService {
     }
     static void REVENUE() {
         double revenue = 0.0;
+        for(Bill bl : HospitalManagement.bill) {
+            if(bl.status.equals("Paid")) {
+                revenue += bl.totalAmount;
+            }
+        }
+        System.out.println("HOSPITAL REVENUE: " + revenue);
     }
 }

@@ -43,7 +43,7 @@ public class HospitalManagement {
                 case 1 -> RegistrationService.REGISTRATION();
                 case 2 -> AppointmentService.APPOINTMENTMENU();
                 case 3 -> BillingService.BILLINGMENU();
-                case 4 -> RECORDS();
+                case 4 -> RecordService.RECORDS();
                 case 5 -> AdminService.ADMINLOGIN();
                 case 6 -> {
                     while(true) {
@@ -63,20 +63,5 @@ public class HospitalManagement {
                 }
             }
         }
-    }
-    static void RECORDS() {
-
-    }
-    static void VIEWPATIENT() {
-
-    }
-    static void VIEWDOCTORS() {
-
-    }
-    static void VIEWAPPOINTMENTS() {
-
-    }
-    static void VIEWBILLS() {
-
     }
 }

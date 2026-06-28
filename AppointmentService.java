@@ -39,22 +39,22 @@ public class AppointmentService {
             Patient patientfound = null;
             System.out.println("=====BOOK-APPOINTMENT=====");
             System.out.println("Enter Patient ID: ");
-            int patientID;
+            int patientIDs;
 
             try {
-                patientID = Integer.parseInt(scanner.nextLine());
+                patientIDs = Integer.parseInt(scanner.nextLine());
             } catch(NumberFormatException e) {
                 System.out.println("Numbers only.");
                 continue;
             }
 
-            if(patientID < 1000 || patientID > 9999) {
+            if(patientIDs < 1000 || patientIDs > 9999) {
                 System.out.println("4 Digits only.");
                 continue;
             }
 
             for(Patient ptt : HospitalManagement.patient) {
-                if(ptt.patientID == patientID) {
+                if(ptt.patientID == patientIDs) {
                     patientfound = ptt;
                     System.out.println("Patient ID found.");
                     break;
@@ -95,6 +95,7 @@ public class AppointmentService {
                 System.out.println("Dr. " + doctorfound.name + " is currently unavailable." );
                 continue;
             }
+
 
             System.out.println("Date for appointment: Ex. (XX/XX/XXXX)");
             String appoDate = scanner.nextLine();
