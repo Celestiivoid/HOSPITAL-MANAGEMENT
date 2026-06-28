@@ -1,10 +1,8 @@
 package HOSPITALMANAGEMENT;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class AdminService {
     static Scanner scanner = HospitalManagement.scanner;
-    static ArrayList<PATIENT> patient = HospitalManagement.patient;
      static boolean ADMINLOGIN() {
         while(true) {
             System.out.println("=====ADMIN-LOGIN=====");
@@ -122,7 +120,7 @@ public class AdminService {
                 System.out.println("Invalid availability type.");
                 continue;
             }
-            DOCTOR doctorAdd = new DOCTOR();
+            Doctor doctorAdd = new Doctor();
             doctorAdd.name = doctorName;
             doctorAdd.specialization = doctorSpecialization;
             doctorAdd.doctorFee = doctoconsultationFee;
@@ -144,7 +142,7 @@ public class AdminService {
             }
 
             for(int i = 0; i < HospitalManagement.doctor.size(); i++) {
-                DOCTOR dtr = HospitalManagement.doctor.get(i);
+                Doctor dtr = HospitalManagement.doctor.get(i);
                 System.out.println((i + 1) + ".) " 
                 + "Dr. " + dtr.name 
                 + " | Specialization: " 
@@ -176,7 +174,7 @@ public class AdminService {
     static void UPDATE() {
         while(true) {
             boolean doctorFind = false;
-            DOCTOR findDoctor = null;
+            Doctor findDoctor = null;
             System.out.println("=====UPDATE-AVAILABILITY=====");
 
             if(HospitalManagement.doctor.isEmpty()) {
@@ -198,7 +196,7 @@ public class AdminService {
                 System.out.println("3 Digits only.");
                 continue;
             }
-            for(DOCTOR dtr : HospitalManagement.doctor) {
+            for(Doctor dtr : HospitalManagement.doctor) {
                 if(doctorIDinput == dtr.doctorID) {
                     findDoctor = dtr;
                     doctorFind = true;
@@ -247,6 +245,6 @@ public class AdminService {
         }
     }
     static void REVENUE() {
-
+        double revenue = 0.0;
     }
 }

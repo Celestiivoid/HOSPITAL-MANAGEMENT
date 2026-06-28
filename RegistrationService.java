@@ -1,10 +1,8 @@
 package HOSPITALMANAGEMENT;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class RegistrationService {
     static Scanner scanner = HospitalManagement.scanner;
-    static ArrayList<PATIENT> patient = HospitalManagement.patient;
 
     static void REGISTRATIONMENU() {
         while(true) {
@@ -106,7 +104,7 @@ public class RegistrationService {
                 continue;
             }
 
-            PATIENT patientRegistration = new PATIENT();
+            Patient patientRegistration = new Patient();
             patientRegistration.name = patientName;
             patientRegistration.age = ageRegistration;
             patientRegistration.gender = genderRegistration;
@@ -114,7 +112,7 @@ public class RegistrationService {
             patientRegistration.address = addressRegistration;
             patientRegistration.medicalHistory = medicalhistoryRegistration;
             patientRegistration.patientID = HospitalManagement.patientIDnumbers++;
-            patient.add(patientRegistration);
+            HospitalManagement.patient.add(patientRegistration);
             System.out.println("PATIENT REGISTRATION SUCCESSFUL");
             System.out.println("PATIENT ID: " + "HPM-" + patientRegistration.patientID);
             return;
@@ -139,7 +137,7 @@ public class RegistrationService {
                 continue;
             }
 
-            for(PATIENT ptt : patient) {
+            for(Patient ptt : HospitalManagement.patient) {
                 if(patientSearch == ptt.patientID) {
                     findPatient = true;
                     System.out.println("Patient found.");

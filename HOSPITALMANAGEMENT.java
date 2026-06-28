@@ -2,45 +2,12 @@ package HOSPITALMANAGEMENT;
 import java.util.Scanner;
 import java.util.ArrayList;
 
-class PATIENT {
-    String name;
-    int age;
-    String gender;
-    String contactNumber;
-    String address;
-    String medicalHistory;
-    int patientID;
-}
-class DOCTOR {
-    String name;
-    String specialization;
-    String availability;
-    int doctorID;
-    double doctorFee;
-}
-class BILL {
-    int billID;
-    APPOINTMENT appointment;
-    double consultationFee;
-    double medicineFee;
-    double laboratoryFee;
-    double totalAmount;
-    String status;
-}
-class APPOINTMENT {
-    int appointmentID;
-    DOCTOR doctor;
-    PATIENT patient;
-    String appointmentDate;
-    String appointmentTime;
-    String appointmentStatus;
-}
 public class HospitalManagement {
     static Scanner scanner = new Scanner(System.in);
-    static ArrayList<PATIENT> patient = new ArrayList<>();
-    static ArrayList<DOCTOR> doctor = new ArrayList<>();
-    static ArrayList<APPOINTMENT> appointment = new ArrayList<>();
-    static ArrayList<BILL> bill = new ArrayList<>();
+    static ArrayList<Patient> patient = new ArrayList<>();
+    static ArrayList<Doctor> doctor = new ArrayList<>();
+    static ArrayList<Appointment> appointment = new ArrayList<>();
+    static ArrayList<Bill> bill = new ArrayList<>();
     static int patientIDnumbers = 1001;
     static int doctorIDnumbers = 101;
     static int appointmentIDnumbers = 501;

@@ -1,10 +1,8 @@
 package HOSPITALMANAGEMENT;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class BillingService {
     static Scanner scanner = HospitalManagement.scanner;
-    static ArrayList<PATIENT> patient = HospitalManagement.patient;
     static void BILLINGMENU() {
         while(true) {
             System.out.println("=====BILLING-MENU=====");
@@ -39,7 +37,7 @@ public class BillingService {
     static void GENERATEBILL() {
         while(true) {
             double total = 0.0;
-            APPOINTMENT found = null;
+            Appointment found = null;
             System.out.println("=====GENERATE-BILL=====");
             System.out.println("Enter Appointment ID: ");
             int generateAppo;
@@ -55,7 +53,7 @@ public class BillingService {
                 System.out.println("3 Digits only.");
             }
 
-            for(APPOINTMENT app : HospitalManagement.appointment) {
+            for(Appointment app : HospitalManagement.appointment) {
                 if(app.appointmentID == generateAppo) {
                 found = app;
                 System.out.println("Appointment ID found.");
@@ -68,7 +66,7 @@ public class BillingService {
                 continue;
             }
 
-            for(BILL bl : HospitalManagement.bill) {
+            for(Bill bl : HospitalManagement.bill) {
                 if(bl.appointment == found) {
                     System.out.println("Billing for Appointment ID " + bl.appointment.appointmentID + " already exist.");
                     return;
@@ -132,7 +130,7 @@ public class BillingService {
 
             switch(option) {
                 case 1 : {
-                    BILL bl = new BILL();
+                    Bill bl = new Bill();
                     bl.billID = HospitalManagement.billingIDnumbers++;
                     bl.medicineFee = medFee;
                     bl.appointment = found;
@@ -155,7 +153,7 @@ public class BillingService {
     }
     static void PAYBILL() {
         while(true) {
-            BILL billFound = null;
+            Bill billFound = null;
             double change = 0.0;
             System.out.println("=====PAY-BILL=====");
             System.out.println("Enter Bill ID: ");
@@ -173,7 +171,7 @@ public class BillingService {
                 continue;
             }
 
-            for(BILL bl: HospitalManagement.bill) {
+            for(Bill bl: HospitalManagement.bill) {
                 if(bl.billID == billingID) {
                 billFound = bl;
                 System.out.println("Bill Found.");

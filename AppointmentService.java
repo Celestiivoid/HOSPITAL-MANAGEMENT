@@ -1,10 +1,8 @@
 package HOSPITALMANAGEMENT;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class AppointmentService {
     static Scanner scanner = HospitalManagement.scanner;
-    static ArrayList<PATIENT> patient = HospitalManagement.patient;
     static void APPOINTMENTMENU() {
         while(true) {
             System.out.println("=====APPOINTMENT-MENU=====");
@@ -38,7 +36,7 @@ public class AppointmentService {
     }
     static void BOOKAPPOINTMENT() {
         while(true) {
-            PATIENT patientfound = null;
+            Patient patientfound = null;
             System.out.println("=====BOOK-APPOINTMENT=====");
             System.out.println("Enter Patient ID: ");
             int patientID;
@@ -55,7 +53,7 @@ public class AppointmentService {
                 continue;
             }
 
-            for(PATIENT ptt : patient) {
+            for(Patient ptt : HospitalManagement.patient) {
                 if(ptt.patientID == patientID) {
                     patientfound = ptt;
                     System.out.println("Patient ID found.");
@@ -69,7 +67,7 @@ public class AppointmentService {
             }
 
             for(int i = 0; i < HospitalManagement.doctor.size(); i++) {
-                DOCTOR dtr = HospitalManagement.doctor.get(i);
+                Doctor dtr = HospitalManagement.doctor.get(i);
                 System.out.println((i + 1) + ".) " 
                 + " Dr. " + dtr.name + " | " 
                 + dtr.specialization + " | " 
@@ -91,7 +89,7 @@ public class AppointmentService {
                 continue;
             }
 
-            DOCTOR doctorfound = HospitalManagement.doctor.get(choose - 1);
+            Doctor doctorfound = HospitalManagement.doctor.get(choose - 1);
 
             if(doctorfound.availability.equalsIgnoreCase("Unavailable")) {
                 System.out.println("Dr. " + doctorfound.name + " is currently unavailable." );
@@ -142,7 +140,7 @@ public class AppointmentService {
 
                 switch(confirmation) {
                     case 1 : {
-                        APPOINTMENT app = new APPOINTMENT();
+                        Appointment app = new Appointment();
                         app.patient = patientfound;
                         app.appointmentStatus = "Scheduled";
                         app.doctor = doctorfound;
@@ -165,7 +163,7 @@ public class AppointmentService {
     }
     static void CANCELAPPOINTMENT() {
         while(true) {
-            APPOINTMENT found = null;
+            Appointment found = null;
             System.out.println("=====CANCEL-APPOINTMENT=====");
             System.out.println("Enter Appointment ID: ");
             int appoID;
@@ -182,7 +180,7 @@ public class AppointmentService {
                 continue;
             }
 
-            for(APPOINTMENT app : HospitalManagement.appointment) {
+            for(Appointment app : HospitalManagement.appointment) {
                 if(app.appointmentID == appoID) {
                     found = app;
                     System.out.println("Appointment Found.");
