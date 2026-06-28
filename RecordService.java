@@ -85,6 +85,9 @@ public class RecordService {
     static void VIEWBILLS() {
         Bill bl = null;
         Appointment app = null;
+        double overallTotal = 0.0;
+        double unpaidTotal = 0.0;
+        double paidTotal = 0.0;
         System.out.println("=====BILLING-RECORDS=====");
 
         if(HospitalManagement.bill.isEmpty()) {
@@ -100,5 +103,22 @@ public class RecordService {
             + "\n Total: " + bl.totalAmount 
             + "\n Status: " + bl.status);
         }
+
+        for(Bill bll : HospitalManagement.bill) {
+            if(bll.status.equals("Unpaid")) {
+                unpaidTotal += bl.totalAmount;
+            }
+        }
+        for(Bill bll : HospitalManagement.bill) {
+            if(bll.status.equals("Paid")) {
+                paidTotal += bl.totalAmount;
+            }
+        }
+        overallTotal = unpaidTotal += paidTotal;
+        System.out.println("=========================");
+        System.out.println("UNPAID TOTAL: " + unpaidTotal);
+        System.out.println("PAID TOTAL: " + paidTotal);
+        System.out.println("OVERALL TOTAL: " + overallTotal);
+        System.out.println("=========================");
     }
 }
