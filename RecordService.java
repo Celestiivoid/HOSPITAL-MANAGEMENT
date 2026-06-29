@@ -98,8 +98,10 @@ public class RecordService {
         for(int i = 0; i < HospitalManagement.bill.size(); i++) {
             app = HospitalManagement.appointment.get(i);
             bl = HospitalManagement.bill.get(i);
-            System.out.println((i + 1) + ".) " + " Bill ID: " + bl.billID
-            + "\n Patient ID: " + app.patient.patientID
+            System.out.println((i + 1) + ".) " 
+            + "\n Bill ID: " + bl.billID
+            + "\n Patient ID: " + app.patient.patientID 
+            + "\n Appointment ID: " + app.appointmentID
             + "\n Total: " + bl.totalAmount 
             + "\n Status: " + bl.status);
         }
